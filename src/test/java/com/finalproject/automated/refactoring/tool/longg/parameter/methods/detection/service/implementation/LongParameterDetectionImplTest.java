@@ -11,8 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Ismayadi Jamil
@@ -42,16 +41,17 @@ public class LongParameterDetectionImplTest {
 
     @Test
     public void detect_singleMethod_success() {
-        longParameterMethodsDetection.detect(methodModels.get(FIRST_INDEX), THRESHOLD);
+        MethodModel methodModel = longParameterMethodsDetection.detect(methodModels.get(FIRST_INDEX) , THRESHOLD);
+        assertNotNull(methodModel);
+        assertEquals(methodModels.get(FIRST_INDEX), methodModel);
+        assertEquals("EmailHelp", methodModel.getName());
 
-        assertEquals(LONG_PARAMETER_METHOD_COUNT.intValue(), methodModels.get(FIRST_INDEX).getCodeSmells().size());
-        assertEquals(CodeSmellName.LONG_PARAMETER_METHOD, methodModels.get(FIRST_INDEX).getCodeSmells().get(FIRST_INDEX));
     }
 
     @Test
     public void detect_singleMethod_success_notLongParameterMethod() {
-        longParameterMethodsDetection.detect(methodModels.get(SECOND_INDEX), THRESHOLD);
-        assertTrue(methodModels.get(SECOND_INDEX).getCodeSmells().isEmpty());
+        MethodModel methodModel = longParameterMethodsDetection.detect(methodModels.get(SECOND_INDEX) , THRESHOLD);
+        assertNull(methodModel);
     }
 
     @Test
@@ -177,7 +177,6 @@ public class LongParameterDetectionImplTest {
     }
 
     private Boolean isLongParameterMethod(MethodModel methodModel) {
-        return methodModel.getCodeSmells()
-                .contains(CodeSmellName.LONG_PARAMETER_METHOD);
+        return methodModel.getParameters().size() > THRESHOLD;
     }
 }

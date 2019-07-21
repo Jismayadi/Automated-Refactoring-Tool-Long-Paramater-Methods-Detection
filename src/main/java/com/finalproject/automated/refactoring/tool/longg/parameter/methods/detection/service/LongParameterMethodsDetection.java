@@ -1,7 +1,7 @@
 package com.finalproject.automated.refactoring.tool.longg.parameter.methods.detection.service;
 
 import com.finalproject.automated.refactoring.tool.model.MethodModel;
-import org.springframework.lang.NonNull;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface LongParameterMethodsDetection {
 
-    void detect(@NonNull MethodModel methodModel, @NonNull Long threshold);
+    MethodModel detect(@lombok.NonNull MethodModel methodModel , @NonNull Long threshold);
 
-    void detect(@NonNull List<MethodModel> methodModels, @NonNull Long threshold);
+    List<MethodModel> detect(@lombok.NonNull List<MethodModel> methodModel , @NonNull Long threshold);
 }

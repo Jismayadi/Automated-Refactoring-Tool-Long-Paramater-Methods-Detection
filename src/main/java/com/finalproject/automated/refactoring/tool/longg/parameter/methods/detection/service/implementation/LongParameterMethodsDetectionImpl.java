@@ -3,10 +3,12 @@ package com.finalproject.automated.refactoring.tool.longg.parameter.methods.dete
 import com.finalproject.automated.refactoring.tool.longg.parameter.methods.detection.service.LongParameterMethodsDetection;
 import com.finalproject.automated.refactoring.tool.model.CodeSmellName;
 import com.finalproject.automated.refactoring.tool.model.MethodModel;
+import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Ismayadi Jamil
@@ -17,24 +19,26 @@ import java.util.List;
 @Service
 public class LongParameterMethodsDetectionImpl implements LongParameterMethodsDetection {
 
+    private static final Integer FIRST_INDEX = 0;
+
     @Override
-    public void detect(MethodModel methodModel, Long threshold) {
-        detect(Collections.singletonList(methodModel), threshold);
+    public MethodModel detect(@NonNull MethodModel methodModel, @NonNull Long threshold) {
+        try {
+            return detect(Collections.singletonList(methodModel), threshold)
+                    .get(FIRST_INDEX);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     @Override
-    public void detect(List<MethodModel> methodModels, Long threshold) {
-        methodModels.parallelStream()
-                .filter(methodModel -> isLongParameterMethod(methodModel, threshold))
-                .forEach(this::checkMethod);
+    public List<MethodModel> detect(@NonNull List<MethodModel> methodModel, @NonNull Long threshold) {
+        return methodModel.stream()
+                .filter(methodModels -> isLongParameterMethods(methodModels, threshold))
+                .collect(Collectors.toList());
     }
 
-    private Boolean isLongParameterMethod(MethodModel methodModel, Long threshold) {
+    public Boolean isLongParameterMethods(MethodModel methodModel , Long threshold){
         return methodModel.getParameters().size() > threshold;
-    }
-
-    private void checkMethod(MethodModel methodModel) {
-        methodModel.getCodeSmells()
-                .add(CodeSmellName.LONG_PARAMETER_METHOD);
     }
 }
